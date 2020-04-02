@@ -1,39 +1,67 @@
-import React, { useState } from 'react'
-import { Button, Grid, Header, Icon, Modal } from 'semantic-ui-react'
+import React, { useState, useEffect } from 'react';
+import { Grid, Icon, Card, Image, Loader, Label } from 'semantic-ui-react';
+
+const MEME_API_URL = 'https://api.imgflip.com/get_memes'
 
 export default function Index() {
+  const [memes, setMemes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setloadError] = useState(null);
 
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const handleOpen = () => setModalOpen(true);
-  const handleClose = () => setModalOpen(false);
+  useEffect(() => {
+    fetch(MEME_API_URL)
+      .then(data => {
+        if (!data.ok) {
+          throw Error(data.toString());
+        }
+        return data.json();
+      }).then(json => {
+        setMemes(json.data.memes);
+        setLoading(false);
+      }).catch(error =>  {
+        setloadError(error.toString());
+      });
+  }, []);
 
   return (
-    <Grid verticalAlign='middle' centered style={{ padding: '20%' }}>
+    <Grid verticalAlign='top' style={{ padding: 35 }} centered >
+
       <Grid.Row centered>
         <Grid.Column style={{ textAlign: 'center' }}>
-          <h3>哩賀，呷霸袂</h3>
-          <p>迷因產生器自己做</p>
-          <Modal
-            trigger={<Button color='teal' onClick={handleOpen}>用台語學JS</Button>}
-            open={modalOpen}
-            onClose={handleClose}
-            basic
-            size='small'
-          >
-            <Header icon='browser' content='課程即將開始' />
-            <Modal.Content>
-              <h3>希望大家一起來學台語～學程式</h3>
-            </Modal.Content>
-            <Modal.Actions>
-              <Button color='green' onClick={handleClose} inverted>
-                <Icon name='checkmark' /> 賀啦！
-              </Button>
-            </Modal.Actions>
-          </Modal>
+          <h3>迷因產生器</h3>
+          {loading && (<Loader active inline />)}
+          {loadError && (
+            <Label as='a' image>
+            <img src='/images/avatar/small/joe.jpg' />
+            {loadError}
+          </Label>
+          )}
         </Grid.Column>
+      </Grid.Row>
+
+      <Grid.Row columns={4}>
+        {
+          memes.map(m => {
+            return (
+              <Grid.Column key={m.id}>
+                <Card style={{marginBottom: 15}}>
+                  <Image src={m.url} wrapped ui={false} />
+                  <Card.Content>
+                    <Card.Header>{m.name}</Card.Header>
+                  </Card.Content>
+                  <Card.Content extra>
+                    <a>
+                      <Icon name='conversation' />
+                      {m.box_count} 句對白
+                    </a>
+                  </Card.Content>
+                </Card>
+              </Grid.Column>
+            );
+          })
+        }
       </Grid.Row>
     </Grid>
   );
-}
-;
+};
+
