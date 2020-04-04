@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Icon, Card, Image, Loader, Label } from 'semantic-ui-react';
+import {
+  Grid,
+  Icon,
+  Card,
+  Image,
+  Loader,
+  Label,
+  Modal,
+  Header,
+  Button,
+} from 'semantic-ui-react';
+import MemeEditModal from '../components/MemeEditModal';
 
 const MEME_API_URL = 'https://api.imgflip.com/get_memes'
 
@@ -7,6 +18,8 @@ export default function Index() {
   const [memes, setMemes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setloadError] = useState(null);
+  const [showMemeModal, setShowMemeModal] = useState(false);
+  const [currentMeme, setCurrentMeme] = useState(false);
 
   useEffect(() => {
     fetch(MEME_API_URL)
@@ -22,6 +35,15 @@ export default function Index() {
         setloadError(error.toString());
       });
   }, []);
+
+  const showMemeInfo = meme => {
+    setCurrentMeme(meme);
+    setShowMemeModal(true);
+  };
+
+  const hideMemeModal = () => {
+    setShowMemeModal(false);
+  };
 
   return (
     <Grid verticalAlign='top' style={{ padding: 35 }} centered >
@@ -44,16 +66,14 @@ export default function Index() {
           memes.map(m => {
             return (
               <Grid.Column key={m.id}>
-                <Card style={{marginBottom: 15}}>
+                <Card style={{marginBottom: 15}} onClick={() => showMemeInfo(m)}>
                   <Image src={m.url} wrapped ui={false} />
                   <Card.Content>
                     <Card.Header>{m.name}</Card.Header>
                   </Card.Content>
                   <Card.Content extra>
-                    <a>
-                      <Icon name='conversation' />
-                      {m.box_count} 句對白
-                    </a>
+                    <Icon name='conversation' />
+                    {m.box_count} 句對白
                   </Card.Content>
                 </Card>
               </Grid.Column>
@@ -61,6 +81,13 @@ export default function Index() {
           })
         }
       </Grid.Row>
+      
+      {/* 編輯迷因對白的彈出視窗 */}
+      <MemeEditModal
+        currentMeme={currentMeme}
+        showMemeModal={showMemeModal}
+        hideMemeModal={hideMemeModal}
+      />
     </Grid>
   );
 };
