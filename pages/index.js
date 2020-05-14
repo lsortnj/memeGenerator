@@ -8,19 +8,30 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
   const [loadError, setloadError] = useState(null);
 
+  // TODO: 這是測試用的假資料，串好API後刪除
+  const fakeData = [
+    {
+        id: '61579',
+        name: 'One Does Not Simply',
+        url: 'https://i.imgflip.com/1bij.jpg',
+        width: 568,
+        height: 335,
+        box_count: 2
+    },
+    {
+        id: '101470',
+        name: 'Ancient Aliens',
+        url: 'https://i.imgflip.com/26am.jpg',
+        width: 500,
+        height: 437,
+        box_count: 2
+    }
+  ];
+
   useEffect(() => {
-    fetch(MEME_API_URL)
-      .then(data => {
-        if (!data.ok) {
-          throw Error(data.toString());
-        }
-        return data.json();
-      }).then(json => {
-        setMemes(json.data.memes);
-        setLoading(false);
-      }).catch(error =>  {
-        setloadError(error.toString());
-      });
+    // TODO: 根據API文件，將這邊改寫，呼叫API拿到迷因圖資料。https://api.imgflip.com/
+    setMemes(fakeData);
+    setLoading(false);
   }, []);
 
   return (
