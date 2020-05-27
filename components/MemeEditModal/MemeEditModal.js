@@ -31,14 +31,15 @@ export default function MemeEditModal ({
   }
 
   const makeCaptionImage = () => {
-    const MALE_IMG_API_URL = 'https://api.imgflip.com/caption_image';
+    const CREATE_IMG_API_URL = ''; // TODO: 根據API文件，填入API的URL
 
+    // 這裡是產生要送到API的參數
     const getPostFormData = () => {
       const postData = new FormData();
       if (currentMeme) {
         postData.append('template_id', currentMeme.id);
-        postData.append('username', 'fadoto8902');
-        postData.append('password', 'memedemo');
+        postData.append('username', ''); // TODO: 填入你在Imgflip的帳號
+        postData.append('password', ''); // TODO: 填入你在Imgflip的密碼
         postData.append('font', 'arial'); // 避免有些預設字型為impact的圖，中文無法顯示
         for(let i = 0; i < currentMeme.box_count; i += 1 ) {
           postData.append(`boxes[${i}][text]`, slotTextMapping[i]);
@@ -47,25 +48,7 @@ export default function MemeEditModal ({
       return postData;
     };
 
-    fetch(MALE_IMG_API_URL, {
-      method: 'POST',
-      headers: {
-        "Accept": "application/json",
-        "Accept-Charset": "utf-8",
-      },
-      body: getPostFormData(),
-    })
-      .then(res => {
-        if (!res.ok) {
-          throw Error(res.toString());
-        }
-        return res.json();
-      }).then(json => {
-        console.log({json});
-        setNewMemeUrl(json.data.url);
-      }).catch(error =>  {
-        
-      });
+    // TODO: 在這邊發POST到API
   };
 
   const resetAll = () => {
