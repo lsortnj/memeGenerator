@@ -119,7 +119,7 @@ export default function MemeEditModal ({
           />
           {newMemeUrl && (
             <a
-              href={`https://www.facebook.com/sharer.php?u=${newMemeUrl}`}
+              href={`TODO`}
               target="_blank"
             >
               分享到FB
